@@ -653,9 +653,10 @@ h1 {
   padding: 60px 16px 4px;
   position: relative;
   flex: none;
-  overflow: hidden;
+  overflow: visible;
+  z-index: 1;
 }
-.chat-header > *:not(.chat-wave) {
+.chat-header > *:not(.chat-header-art) {
   position: relative;
 }
 .chat-wave {
@@ -837,8 +838,9 @@ h1 {
   background: linear-gradient(#f8f8fa00, #f8f8fa 25%);
 }
 .chat-orders {
-  margin: 0 0 8px;
-  padding: 2px 16px;
+  margin: 0 14px 8px;
+  padding: 2px;
+  scroll-padding-inline: 2px;
   gap: 6px;
 }
 .quick-replies {
@@ -1679,7 +1681,8 @@ dd {
     margin-bottom: 20px;
   }
   .chat-orders {
-    padding-left: 2px;
+    margin-inline: -2px;
+    padding-inline: 2px;
   }
   .rating-layer {
     display: flex;
@@ -2120,4 +2123,41 @@ dialog.rating-layer::backdrop {
 
 .desktop-nav {
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1280 64' preserveAspectRatio='none'><g transform='matrix(-128 -3.8589e-7 0.000010636 -9.7484 1280 64)'><foreignObject x='-90' y='-90' width='180' height='180'><div xmlns='http://www.w3.org/1999/xhtml' style='background-image: conic-gradient(from 90deg, rgb(111, 143, 249) 0%, rgb(128, 154, 239) 72.596%, rgb(111, 143, 249) 100%); opacity:1; height: 100%; width: 100%;'></div></foreignObject></g></svg>");
+}
+.observation {
+  padding-left: 6px;
+  gap: 2px;
+}
+.observation > img {
+  width: 33px;
+  height: 33px;
+}
+.observation i {
+  margin-left: 6px;
+}
+.observation > .icon {
+  margin-left: 6px;
+}
+
+.chat-orders .order-card {
+  overflow: visible;
+}
+.chat-orders .order-card.selected {
+  outline: none;
+}
+.chat-orders .order-card.selected::after {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border: 2px solid var(--blue);
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.chat-header-art {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
 }

@@ -85,8 +85,11 @@ export function Support({
   }
   return (
     <main className={`chat-screen ${order ? "active" : "empty"}`}>
+      <link rel="preload" as="image" href={asset("star")} />
       <header className="chat-header">
-        <img className="chat-wave" src={asset("chatWave")} alt="" />
+        <div className="chat-header-art" aria-hidden="true">
+          <img className="chat-wave" src={asset("chatWave")} alt="" />
+        </div>
         <button
           className="back-button"
           onClick={onBack}

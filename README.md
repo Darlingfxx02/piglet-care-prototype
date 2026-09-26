@@ -1,5 +1,7 @@
 # Поросята
 
+[Открыть прототип](https://darlingfxx02.github.io/piglet-care-prototype/)
+
 Интерактивный frontend-прототип приложения доставки поросят по авторскому Figma-макету. React, TypeScript, Vite и обычный CSS. Сервер не требуется.
 
 ## Запуск
