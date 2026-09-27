@@ -15,9 +15,9 @@ describe("local support flow", () => {
         review: { score: 5, reason: "", comment: "" },
         closed: true,
       },
-      { type: "select", orderId: "3207" },
+      { type: "select", orderId: "19642" },
     );
-    expect(s.orderId).toBe("3207");
+    expect(s.orderId).toBe("19642");
     expect(s.messages).toHaveLength(1);
     expect(s.review).toBeNull();
     expect(s.closed).toBe(false);
@@ -39,7 +39,7 @@ describe("local support flow", () => {
     ).toEqual(s);
   });
   it("keeps the selected order in the reply", () => {
-    expect(demoReply("Когда?", orders[2])).toContain("№3207");
+    expect(demoReply("Когда?", orders[2])).toContain("№19642");
     expect(demoReply("Когда?", orders[2])).toContain("6 октября");
   });
   it("saves negative feedback and prevents messages after closing", () => {
@@ -52,6 +52,16 @@ describe("local support flow", () => {
     expect(s.review?.reason).toBe("Вопрос не решён");
     expect(supportReducer(s, { type: "send", text: "test" })).toEqual(s);
   });
+  it("reopens the same conversation and keeps its context, history and review", () => {
+    let state = supportReducer(initialSupport, { type: "selectAnimal", tag: "018" });
+    state = supportReducer(state, { type: "send", text: "Нужна помощь" });
+    state = supportReducer(state, { type: "review", review: { score: 2, reason: "", comment: "" } });
+    const reopened = supportReducer(state, { type: "reopen" });
+    expect(reopened).toEqual({ ...state, closed: false });
+    const continued = supportReducer(reopened, { type: "send", text: "Вопрос остался" });
+    expect(continued.messages).toHaveLength(state.messages.length + 1);
+    expect(continued.messages.at(-1)?.text).toBe("Вопрос остался");
+  });
   it("recovers safely from corrupt storage", () => {
     for (const value of [
       "{",
@@ -63,13 +73,13 @@ describe("local support flow", () => {
   it("restores valid history", () => {
     const s = supportReducer(initialSupport, {
       type: "select",
-      orderId: "3206",
+      orderId: "748",
     });
     expect(readSupport({ getItem: () => JSON.stringify(s) })).toEqual(s);
   });
   it("searches by number and breed with whitespace", () => {
-    expect(findOrders(" №3206 ")[0].breed).toBe("Дюрок");
-    expect(findOrders("бЕРК")[0].id).toBe("3207");
+    expect(findOrders(" №748 ")[0].breed).toBe("Дюрок");
+    expect(findOrders("бЕРК")[0].id).toBe("19642");
     expect(findOrders("404")).toHaveLength(0);
   });
 });

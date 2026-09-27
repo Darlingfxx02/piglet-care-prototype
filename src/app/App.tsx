@@ -1,4 +1,4 @@
-import { useEffect, useReducer, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useReducer, useRef, useState } from "react";
 import { DesktopNav, Home, type Panel } from "../features/Home";
 import { Support, Rating } from "../features/Support";
 import { OrderCard } from "../features/Orders";
@@ -8,9 +8,24 @@ import {
   readSupport,
   supportReducer,
   STORAGE_KEY,
+  initialSupport,
   type Order,
 } from "../domain/demo";
-import { Modal } from "../shared/UI";
+const caseScenario = new URLSearchParams(location.search).get("case");
+function initialCaseState() {
+  if (caseScenario === "delivery") {
+    const selected = supportReducer(initialSupport, { type: "select", orderId: "748" });
+    return selected;
+  }
+  if (caseScenario === "vet") {
+    const selected = supportReducer(initialSupport, { type: "selectAnimal", tag: "018" });
+    return supportReducer(selected, { type: "reply", text: "", treatmentAnimalTag: "018" });
+  }
+  if (caseScenario === "rating") return supportReducer(supportReducer(initialSupport, { type: "select", orderId: "748" }), { type: "close" });
+  return { ...initialSupport };
+}
+import { Modal, Waves } from "../shared/UI";
+import { FeedbackToast } from "../shared/FeedbackToast";
 import { asset } from "../shared/assets";
 const currentRoute = () =>
   location.hash.startsWith("#/support")
@@ -20,18 +35,43 @@ const currentRoute = () =>
       : "home";
 export default function App() {
   const [route, setRoute] = useState(currentRoute);
+  const [mobileNotice, setMobileNotice] = useState(() => window.top === window.self &&
+    (matchMedia('(max-width: 699px)').matches || matchMedia('(pointer: coarse) and (max-height: 500px)').matches));
+  useEffect(() => {
+    if (!mobileNotice) return;
+    const timer = window.setTimeout(() => setMobileNotice(false), 8000);
+    return () => window.clearTimeout(timer);
+  }, [mobileNotice]);
   const [state, dispatch] = useReducer(supportReducer, undefined, () =>
-    readSupport(localStorage),
+    caseScenario ? initialCaseState() : readSupport(localStorage),
   );
+  const [caseRevision, setCaseRevision] = useState(0);
   const [panel, setPanel] = useState<Panel>(null);
   const [detail, setDetail] = useState<Order | null>(null);
   const [query, setQuery] = useState("");
-  const [success, setSuccess] = useState(false);
+  const [feedbackToast, setFeedbackToast] = useState(false);
+  useEffect(() => {
+    if (!feedbackToast) return;
+    const timer = window.setTimeout(() => setFeedbackToast(false), 4000);
+    return () => clearTimeout(timer);
+  }, [feedbackToast]);
   const [storageError, setStorageError] = useState(false);
   const ratingDialog = useRef<HTMLDialogElement>(null);
-  useEffect(() => {
-    if (route === "rating") ratingDialog.current?.showModal();
-  }, [route]);
+  useLayoutEffect(() => {
+    if (route !== "rating") return;
+    const viewport = window.matchMedia("(min-width: 700px)");
+    const showRating = () => {
+      const dialog = ratingDialog.current;
+      if (!dialog) return;
+      if (dialog.open) dialog.close();
+      if (viewport.matches) dialog.show();
+      else dialog.showModal();
+      dialog.focus({ preventScroll: true });
+    };
+    showRating();
+    viewport.addEventListener("change", showRating);
+    return () => viewport.removeEventListener("change", showRating);
+  }, [route, caseRevision]);
   useEffect(() => {
     const fn = () => {
       setRoute(currentRoute());
@@ -41,6 +81,7 @@ export default function App() {
     return () => window.removeEventListener("hashchange", fn);
   }, []);
   useEffect(() => {
+    if (caseScenario) return;
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
     } catch {
@@ -56,6 +97,25 @@ export default function App() {
     setPanel(null);
     setDetail(null);
   }
+  useEffect(() => {
+    if (!caseScenario || window.parent === window) return;
+    const resetCase = (event: Event) => {
+      const { seed, route: nextRoute } = (event as CustomEvent).detail ?? {};
+      if (!["home", "support", "delivery", "vet", "rating"].includes(seed) || !["home", "support", "rating"].includes(nextRoute)) return;
+      dispatch({ type: "reset" });
+      if (seed === "delivery" || seed === "rating") dispatch({ type: "select", orderId: "748" });
+      if (seed === "vet") {
+        dispatch({ type: "selectAnimal", tag: "018" });
+        dispatch({ type: "reply", text: "", treatmentAnimalTag: "018" });
+      }
+      if (seed === "rating") dispatch({ type: "close" });
+      setCaseRevision(n => n + 1);
+      setFeedbackToast(false);
+      navigate(nextRoute);
+    };
+    window.addEventListener("case:reset", resetCase);
+    return () => window.removeEventListener("case:reset", resetCase);
+  }, []);
   const props = {
     onSupport: () => navigate("support"),
     onPanel: setPanel,
@@ -66,11 +126,20 @@ export default function App() {
   };
   return (
     <div className={`app route-${route}`}>
+      {mobileNotice && <div className="mobile-case-notice" role="status">
+        <span>Для полного просмотра кейса откройте его на компьютере</span>
+        <button aria-label="Закрыть уведомление" onClick={() => setMobileNotice(false)}>
+          <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="m4 4 8 8M12 4l-8 8" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" /></svg>
+        </button>
+      </div>}
+      {route === "rating" && <div className="rating-shared-background" aria-hidden="true"><Waves rating /></div>}
       <DesktopNav {...props} onHome={() => navigate("home")} />
       {route === "home" ? (
         <Home {...props} />
       ) : (
         <Support
+          key={caseRevision}
+          isRating={route === "rating"}
           state={state}
           dispatch={dispatch}
           onBack={() => navigate("home")}
@@ -80,6 +149,8 @@ export default function App() {
       {route === "rating" && (
         <dialog
           ref={ratingDialog}
+          tabIndex={-1}
+          autoFocus
           className="rating-layer"
           aria-label="Оценка оператора"
           onCancel={(e) => {
@@ -88,40 +159,20 @@ export default function App() {
           }}
         >
           <Rating
+            key={caseRevision}
             onClose={() => navigate("support")}
-            onSkip={() => {
-              dispatch({ type: "close" });
-              navigate("home");
-            }}
             onSubmit={(score, reason, comment) => {
               dispatch({ type: "review", review: { score, reason, comment } });
+              setFeedbackToast(true);
               navigate("support");
-              setSuccess(true);
             }}
           />
         </dialog>
       )}
-      {success && (
-        <Modal title="Спасибо за оценку!" onClose={() => setSuccess(false)}>
-          <img className="success-star" src={asset("star")} alt="" />
-          <p>
-            Вы оценили работу Анны на {state.review?.score} из 5. В этом
-            прототипе отзыв сохранён только на вашем устройстве.
-          </p>
-          <button
-            className="primary"
-            onClick={() => {
-              setSuccess(false);
-              navigate("home");
-            }}
-          >
-            На главную
-          </button>
-        </Modal>
-      )}
+      {feedbackToast && route === "support" && <FeedbackToast onDismiss={() => setFeedbackToast(false)} />}
       {detail && (
         <Modal
-          title={`${detail.breed} · №${detail.id}`}
+          title={`${detail.breed}, заказ №${detail.id}`}
           onClose={() => setDetail(null)}
         >
           <div className="detail-top">
@@ -166,7 +217,7 @@ export default function App() {
               vet: "Забота о животных",
               feed: "Корм и уход",
               orders: "Мои доставки",
-              about: "О прототипе",
+              about: "О приложении",
             }[panel]
           }
           onClose={() => setPanel(null)}
@@ -240,7 +291,7 @@ export default function App() {
                 История поддержки
               </button>
               <button className="menu-row" onClick={() => setPanel("about")}>
-                О прототипе
+                О приложении
               </button>
             </>
           )}
@@ -255,8 +306,8 @@ export default function App() {
                 </div>
               </div>
               <p>
-                В тестовом прототипе можно изучить доставку и обратиться в
-                поддержку. Покупка товаров пока недоступна.
+                Покупка товаров пока недоступна. По вопросам корма и ухода
+                напишите в поддержку.
               </p>
               <button className="primary" onClick={() => navigate("support")}>
                 Спросить о корме
@@ -266,7 +317,7 @@ export default function App() {
           {panel === "vet" && (
             <>
               <p>
-                Текущие задачи в демонстрационном хозяйстве. Животных можно
+                Текущие задачи вашего хозяйства. Животных можно
                 отличить по номеру ушной бирки.
               </p>
               <div className="health-list">
@@ -281,7 +332,7 @@ export default function App() {
                     <img src={asset(o.image)} alt="" />
                     <span>
                       <b>
-                        {o.breed} · №{o.tag}
+                        {o.breed}<span className="metadata-secondary">Бирка №{o.tag}</span>
                       </b>
                       <small>{o.health}</small>
                     </span>
@@ -292,28 +343,8 @@ export default function App() {
           )}
           {panel === "about" && (
             <>
-              <p>
-                Интерактивный прототип тестового задания. Данные о животных,
-                заказах и доставке демонстрационные.
-              </p>
-              <p>
-                Чат отвечает по локальному сценарию. Сообщения, вложения и
-                оценки не отправляются оператору или на сервер.
-              </p>
-              <p>
-                Переписка и оценка сохраняются в браузере. Покупка и запись к
-                ветеринару не подключены.
-              </p>
-              <button
-                className="secondary"
-                onClick={() => {
-                  dispatch({ type: "reset" });
-                  setPanel(null);
-                  navigate("home");
-                }}
-              >
-                Сбросить демонстрацию
-              </button>
+              <p>Доставки, документы и забота о ваших животных в одном приложении.</p>
+              <p>Отслеживайте заказы и обращайтесь в поддержку по любому вопросу.</p>
             </>
           )}
         </Modal>

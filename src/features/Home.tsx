@@ -39,13 +39,13 @@ export function Search({
       role="search"
     >
       <Icon name="search" />
-      <input
+      <input disabled
         aria-label="Найти заказ"
         placeholder="Найти заказ по номеру"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
       />
-      <button className="sr-only" type="submit">
+      <button disabled className="sr-only" type="submit">
         Найти
       </button>
     </form>
@@ -61,7 +61,7 @@ export function SupportButton({ onClick }: { onClick: () => void }) {
 }
 function Bell({ onClick }: { onClick: () => void }) {
   return (
-    <button
+    <button disabled
       className="bell"
       onClick={onClick}
       aria-label="Уведомления, 2 новых"
@@ -74,25 +74,27 @@ function Bell({ onClick }: { onClick: () => void }) {
 export function DesktopNav(p: Props & { onHome: () => void }) {
   return (
     <header className="desktop-nav">
+      <span className="brand-home" aria-label="Поросята">
+        <svg viewBox="0 0 48 36" aria-hidden="true">
+          <path fill="currentColor" fillRule="evenodd" d="M24 2C10 2 2 8 2 18s8 16 22 16 22-6 22-16S38 2 24 2Zm-8 9a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0v-8a3 3 0 0 0-3-3Zm16 0a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0v-8a3 3 0 0 0-3-3Z" clipRule="evenodd" />
+        </svg>
+      </span>
       <div className="desktop-links">
-        <button className="nav-home" onClick={p.onHome} aria-label="Главная">
-          <Icon name="desktopHome" />
-        </button>
-        <button className="nav-shop" onClick={() => p.onPanel("shop")}>
+        <button disabled className="nav-shop" onClick={() => p.onPanel("shop")}>
           <span className="snout">
             <img src={asset("snout")} alt="" />
           </span>
           Магазин
         </button>
       </div>
-      <button className="tablet-menu" onClick={() => p.onPanel("profile")}>
+      <button disabled className="tablet-menu" onClick={() => p.onPanel("profile")}>
         <span className="menu-lines" />
         Меню
       </button>
       <Search {...p} />
       <SupportButton onClick={p.onSupport} />
       <Bell onClick={() => p.onPanel("notifications")} />
-      <button
+      <button disabled
         className="avatar-button"
         onClick={() => p.onPanel("profile")}
         aria-label="Профиль Марии"
@@ -133,7 +135,7 @@ export function Statistics() {
         <h2>Мой скот</h2>
         <div className="carousel-dots" aria-label="Показатели скота">
           {["Поголовье", "Средний вес", "Запас корма"].map((s, i) => (
-            <button
+            <button disabled
               key={s}
               aria-label={s}
               aria-current={slide === i}
@@ -202,7 +204,7 @@ export function Home(p: Props) {
       <header className="mobile-hero">
         <Waves />
         <div className="mobile-profile-row">
-          <button className="user-name" onClick={() => p.onPanel("profile")}>
+          <button disabled className="user-name" onClick={() => p.onPanel("profile")}>
             <img src={asset("avatar")} alt="" />
             <span>Мария</span>
           </button>
@@ -214,17 +216,17 @@ export function Home(p: Props) {
           <h2>Доставки</h2>
           <div className="order-carousel">
             {orders.map((o) => (
-              <OrderCard key={o.id} order={o} onClick={() => p.onOrder(o)} />
+              <OrderCard disabled key={o.id} order={o} onClick={() => p.onOrder(o)} />
             ))}
           </div>
         </section>
-        <button className="view-all" onClick={() => p.onPanel("orders")}>
+        <button disabled className="view-all" onClick={() => p.onPanel("orders")}>
           Посмотреть все
           <Icon name="down" />
         </button>
       </header>
       <main className="home-content">
-        <button
+        <button disabled
           className="delivery-summary"
           onClick={() => p.onPanel("orders")}
         >
@@ -240,11 +242,11 @@ export function Home(p: Props) {
           <Icon name="chevron" className="right" />
         </button>
         <Statistics />
-        <button className="observation" onClick={() => p.onPanel("vet")}>
+        <button disabled className="observation" onClick={() => p.onPanel("vet")}>
           <img src={asset("vet")} alt="" />
           <span>
             <b>Под наблюдением</b>
-            <small>№018 · контроль веса&nbsp;&nbsp; №071 · осмотр</small>
+            <small className="observation-summary"><span>№018: контроль веса</span><span>№071: осмотр</span></small>
           </span>
           <i>2</i>
           <Icon name="chevron" className="right" />
@@ -253,7 +255,7 @@ export function Home(p: Props) {
           <h2>Ветеринария</h2>
           <div className="animal-grid">
             {orders.map((o) => (
-              <OrderCard
+              <OrderCard disabled
                 key={o.id}
                 order={o}
                 mode="health"
@@ -265,43 +267,44 @@ export function Home(p: Props) {
         <section className="offers-section">
           <h2>Вам пригодится</h2>
           <div className="offers">
-            <button className="offer" onClick={() => p.onPanel("feed")}>
+            <button disabled className="offer" onClick={() => p.onPanel("feed")}>
               <b>Корм и уход</b>
-              <span>
-                Наборы
-                <br />к приезду
-              </span>
+              <span>Наборы<br />к приезду</span>
               <img src={asset("feed")} alt="" />
             </button>
-            <button
+            <button disabled
               className="offer vet-offer"
               onClick={() => p.onPanel("vet")}
             >
               <b>Ветеринар рядом</b>
-              <span>
-                Помощь
-                <br />в здоровье
-              </span>
+              <span>Помощь<br />в здоровье</span>
               <img src={asset("calendar")} alt="" />
             </button>
           </div>
+          <div className="feature-placeholders" aria-label="Место для будущих возможностей">
+            {["wide", "half", "half"].map((size, i) => (
+              <div key={i} className={`feature-placeholder feature-placeholder-${size}`} aria-hidden="true">
+                <span>Block</span><span>Block</span>
+              </div>
+            ))}
+          </div>
         </section>
-        <button className="demo-link" onClick={() => p.onPanel("about")}>
-          О прототипе
+        <button disabled className="demo-link" onClick={() => p.onPanel("about")}>
+          О приложении
         </button>
       </main>
       <nav className="bottom-nav" aria-label="Основная навигация">
-        <button aria-current="page">
+        <button disabled aria-current="page">
           <Icon name="home" />
           <span>Главная</span>
         </button>
-        <button onClick={() => p.onPanel("shop")}>
+        <button disabled onClick={() => p.onPanel("shop")}>
           <span className="snout">
             <img src={asset("snout")} alt="" />
           </span>
           <span>Магазин</span>
         </button>
-        <button onClick={() => p.onPanel("profile")}>
+        <button disabled onClick={() => p.onPanel("profile")}>
           <Icon name="profile" />
           <span>Профиль</span>
         </button>

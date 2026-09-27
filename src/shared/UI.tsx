@@ -1,4 +1,4 @@
-import { useEffect, useRef, type ReactNode } from "react";
+import { useEffect, useRef, type ReactNode, type CSSProperties } from "react";
 import { asset, type AssetName } from "./assets";
 export function Icon({
   name,
@@ -39,11 +39,13 @@ export function Modal({
   children,
   onClose,
   className = "",
+  style,
 }: {
   title: string;
   children: ReactNode;
   onClose: () => void;
   className?: string;
+  style?: CSSProperties;
 }) {
   const ref = useRef<HTMLDialogElement>(null);
   useEffect(() => {
@@ -59,6 +61,7 @@ export function Modal({
     <dialog
       ref={ref}
       className={`modal ${className}`}
+      style={style}
       onCancel={(e) => {
         e.preventDefault();
         onClose();
