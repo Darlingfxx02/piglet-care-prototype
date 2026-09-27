@@ -36,7 +36,7 @@ export const shots: Shot[] = [
     route: "home",
     before: t(".mobile-hero"),
     camera: "top",
-    duration: 13000,
+    duration: 6500,
   },
   {
     title: "Вход в поддержку",
@@ -47,7 +47,7 @@ export const shots: Shot[] = [
     action: t(".mobile-profile-row .support-button"),
     after: t(".support-area-options"),
     camera: "top",
-    duration: 11000,
+    duration: 5500,
   },
   {
     title: "Выбор темы обращения",
@@ -58,7 +58,7 @@ export const shots: Shot[] = [
     action: delivery[0],
     after: t(".chat-orders"),
     camera: "bottom",
-    duration: 11000,
+    duration: 5500,
   },
   {
     title: "Выбор заказа",
@@ -71,7 +71,7 @@ export const shots: Shot[] = [
     scrollBeforeAction: true,
     after: t(".topic-confirm"),
     camera: "center",
-    duration: 12000,
+    duration: 7500,
   },
   {
     title: "Уточнение времени доставки",
@@ -83,7 +83,7 @@ export const shots: Shot[] = [
     action: t(".quick-replies button", "Уточнить время"),
     after: t(".messages .message.operator:not(.typing):last-child"),
     camera: "center",
-    duration: 14000,
+    duration: 8000,
   },
   {
     title: "Когда нужен человек",
@@ -95,7 +95,7 @@ export const shots: Shot[] = [
     action: t(".quick-replies button", "Нет нужного варианта"),
     after: t(".messages .message.operator:not(.typing):last-child"),
     camera: "center",
-    duration: 14000,
+    duration: 8000,
   },
   {
     title: "Ветеринарная поддержка",
@@ -107,7 +107,7 @@ export const shots: Shot[] = [
     action: vet[2],
     after: t(".animal-context"),
     camera: "center",
-    duration: 13000,
+    duration: 7000,
   },
   {
     title: "План лечения прямо в чате",
@@ -119,7 +119,7 @@ export const shots: Shot[] = [
     action: t(".quick-replies button", "Какой план лечения?"),
     after: t(".treatment-plan"),
     camera: "center",
-    duration: 12000,
+    duration: 6500,
   },
   {
     title: "Документы не нужно искать заново",
@@ -131,7 +131,7 @@ export const shots: Shot[] = [
     action: t(".attachment-menu button", "Ваши документы"),
     after: t(".documents-grid"),
     camera: "center",
-    duration: 12000,
+    duration: 6500,
   },
   {
     title: "Завершаем разговор",
@@ -144,7 +144,7 @@ export const shots: Shot[] = [
     after: t(".rating-card"),
     overviewAfter: true,
     camera: "top",
-    duration: 12000,
+    duration: 7000,
   },
   {
     title: "Оценка без визуального давления",
@@ -155,7 +155,7 @@ export const shots: Shot[] = [
     action: star,
     after: t(".stars"),
     camera: "bottom",
-    duration: 12000,
+    duration: 7000,
   },
   {
     title: "Необязательный комментарий",
@@ -167,7 +167,7 @@ export const shots: Shot[] = [
     action: t(".rating-submit"),
     after: t(".feedback-details"),
     camera: "center",
-    duration: 12000,
+    duration: 5500,
   },
   {
     title: "Причины низкой оценки",
@@ -182,7 +182,7 @@ export const shots: Shot[] = [
     action: t(".reason-options button", "Вопрос не решён"),
     after: t(".reason-options"),
     camera: "center",
-    duration: 12000,
+    duration: 6500,
   },
   {
     title: "Спасибо без дополнительного шага",
@@ -198,7 +198,7 @@ export const shots: Shot[] = [
     action: t(".rating-submit"),
     after: t(".feedback-toast"),
     camera: "top",
-    duration: 10000,
+    duration: 6000,
   },
   {
     title: "Оценка работы поддержки",
@@ -214,7 +214,7 @@ export const shots: Shot[] = [
     before: t(".rating-card"),
     camera: "center",
     overviewAfter: true,
-    duration: 32000,
+    duration: 18000,
   },
 ];
 export function findTarget(

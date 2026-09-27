@@ -287,7 +287,7 @@ button:focus-visible {
 }
 .phone {
   transition:
-    transform 850ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 600ms cubic-bezier(0.22, 1, 0.36, 1),
     opacity 0.35s;
 }
 .mode-tour .camera-top .phone {
@@ -425,7 +425,7 @@ button:focus-visible {
 }
 .mode-tour .phone {
   transition:
-    transform 1200ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 700ms cubic-bezier(0.22, 1, 0.36, 1),
     opacity 0.35s;
   will-change: transform;
 }
@@ -475,7 +475,7 @@ button:focus-visible {
 .wheel-hint { max-width: 285px; font-size: 14px; line-height: 1.5; color: #bcbeba; }
 
 /* Manual scene navigation animates independently of autoplay. */
-.mode-tour .phone { transition: transform 1200ms cubic-bezier(0.22, 1, 0.36, 1), opacity 0.35s; }
+.mode-tour .phone { transition: transform 700ms cubic-bezier(0.22, 1, 0.36, 1), opacity 0.35s; }
 
 @media (prefers-reduced-motion: reduce) { .mode-tour .phone { transition: none; } }
 
@@ -612,7 +612,7 @@ button:focus-visible {
   .adaptive-summary header, .summary-back, .summary-explore { transition: none; }
 }
 
-.adaptive-summary header { animation: summary-heading-enter 700ms ease both; }
+.adaptive-summary header { animation: summary-heading-enter 450ms ease both; }
 @keyframes summary-heading-enter { from { opacity: 0; } to { opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { .adaptive-summary header { animation: none; } }
 

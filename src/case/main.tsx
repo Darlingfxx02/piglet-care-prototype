@@ -125,7 +125,7 @@ function CasePage() {
       seed: s.seed,
       route: s.route,
       key: old.key + 1,
-      continuity: at < 2200 && next === index + 1 && acted && next in continuations,
+      continuity: at < 1200 && next === index + 1 && acted && next in continuations,
       seek: at,
     }));
   }
@@ -194,12 +194,12 @@ function CasePage() {
         await delay(150);
         controller.signal.throwIfAborted();
       }
-      if (source.seek >= 2200 && shot.action) {
+      if (source.seek >= 1200 && shot.action) {
         const action = await waitTarget(doc, shot.action, controller.signal);
         action.click();
         await delay(150);
       }
-      const focus = await waitTarget(doc, source.seek >= 2200 ? (shot.after ?? shot.before) : shot.before, controller.signal);
+      const focus = await waitTarget(doc, source.seek >= 1200 ? (shot.after ?? shot.before) : shot.before, controller.signal);
       focus.scrollIntoView({ block: "nearest", behavior: "instant" });
     };
     (async () => {
@@ -211,14 +211,14 @@ function CasePage() {
         try { await transition.finished; } finally { controller.signal.removeEventListener("abort", cancelTransition); }
       } else await prepare();
       if (!controller.signal.aborted && mode === "tour") {
-        const done = !shot.action || source.seek >= 2200;
+        const done = !shot.action || source.seek >= 1200;
         const anchor = await measureAnchor(doc, shot, done, index, controller.signal);
         controller.signal.throwIfAborted();
         setBox(anchor);
         setPresentedIndex(index);
         setReady(true);
         setActed(done);
-        actionStarted.current = source.seek >= 2200;
+        actionStarted.current = source.seek >= 1200;
       }
     })().catch((e) => {
       if (!controller.signal.aborted) setError(e.message);
@@ -230,7 +230,7 @@ function CasePage() {
     setSpotlight(false);
     if (mode !== "tour" || !ready || changing || complete || index === 0)
       return;
-    const timer = setTimeout(() => setSpotlight(true), 1600);
+    const timer = setTimeout(() => setSpotlight(true), 650);
     return () => clearTimeout(timer);
   }, [mode, ready, changing, complete, index, acted]);
   useEffect(() => {
@@ -330,7 +330,7 @@ function CasePage() {
       !ready ||
       (!playing && !manualEntry) ||
       !shot.action ||
-      (!manualEntry && elapsed < 2200) ||
+      (!manualEntry && elapsed < 1200) ||
       actionStarted.current
     )
       return;
@@ -340,7 +340,7 @@ function CasePage() {
     if (!controller || !doc) return;
     (async () => {
       if (manualEntry) {
-        await new Promise(resolve => setTimeout(resolve, 1600));
+        await new Promise(resolve => setTimeout(resolve, 850));
         if (controller.signal.aborted) return;
       }
       if (!shot.scrollBeforeAction && index !== 2) {
@@ -406,12 +406,12 @@ function CasePage() {
     const animation = node.animate([
       { transform: `translate(0px, 0px) scale(${arrival.scale})` },
       { transform: `translate(${target.x - arrival.x}px, ${target.y - arrival.y}px) scale(${target.width / arrival.width})` },
-    ], { duration: 1000, easing: "cubic-bezier(.22,1,.36,1)", fill: "forwards" });
+    ], { duration: 700, easing: "cubic-bezier(.22,1,.36,1)", fill: "forwards" });
     const tablet = document.querySelector(".adaptive-tablet");
     const tabletAnimation = tablet?.animate([
       { transform: "translate(120px, 160px)", opacity: 0 },
       { transform: "translate(0px, 0px)", opacity: 1 },
-    ], { duration: 1000, easing: "cubic-bezier(.22,1,.36,1)", fill: "both" });
+    ], { duration: 700, easing: "cubic-bezier(.22,1,.36,1)", fill: "both" });
     animation.onfinish = () => setArrival(null);
     return () => { animation.cancel(); tabletAnimation?.cancel(); };
   }, [arrival, complete, mode]);
@@ -681,7 +681,7 @@ function CasePage() {
             {mode !== "free" && <div className="interaction-shield" />}
             {box && mode === "tour" && index !== 0 && (
               <div
-                className={`focus-ring ${spotlight && !overview ? "is-visible" : ""} ${!acted && elapsed > 1300 ? "pressing" : ""}`}
+                className={`focus-ring ${spotlight && !overview ? "is-visible" : ""} ${!acted && elapsed > 750 ? "pressing" : ""}`}
                 style={{
                   left: `${box.x}%`,
                   top: `${box.y}%`,

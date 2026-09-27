@@ -61,7 +61,7 @@ export async function swipeTo(
   const trail = Array.from(svg.querySelectorAll('[data-trail] circle'));
   const dot = svg.querySelector("[data-finger]")!;
   (doc.querySelector("[data-tour-focus]") ?? doc.body).append(svg);
-  const duration = 1100;
+  const duration = 800;
   const started = timelineNow();
   const ease = (t: number) => t * t * (3 - 2 * t);
   const distance = to - from;
@@ -93,7 +93,7 @@ export async function swipeTo(
       win.requestAnimationFrame(draw);
     });
     if (!signal.aborted)
-      await new Promise((resolve) => setTimeout(resolve, 180));
+      await new Promise((resolve) => setTimeout(resolve, 100));
   } finally {
     restore();
     svg.remove();
