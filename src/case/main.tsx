@@ -23,7 +23,7 @@ import type { CSSProperties } from "react";
 type Mode = "choose" | "tour" | "free";
 const extraNotes: Record<string, { title: string; copy: string }> = {
   comment: {
-    title: "Детали — по желанию",
+    title: "Необязательные подробности",
     copy: "Готовые причины зависят от оценки. Они помогают сформулировать отзыв, а комментарий остаётся необязательным. Можно отправить оценку без текста.",
   },
   thanks: {
@@ -32,7 +32,7 @@ const extraNotes: Record<string, { title: string; copy: string }> = {
   },
   closed: {
     title: "Разговор завершён",
-    copy: "История остаётся доступной. Пользователь может начать новый диалог, когда возникнет следующий вопрос.",
+    copy: "История остаётся доступной. Можно начать новый диалог или нажать «Вопрос не решён» и продолжить текущий.",
   },
   documents: {
     title: "Документы внутри разговора",
@@ -560,7 +560,7 @@ function CasePage() {
                   setMode("choose");
                 }}
               >
-                <span aria-hidden="true">←</span> Назад
+                <img className="back-icon" src={arrowRightIcon} alt="" /> Назад
               </button>
               {mode === "free" && (
                 <div className="chapter-segments">
@@ -649,7 +649,7 @@ function CasePage() {
                   <>
                     {complete && (
                       <button className="take-over" onClick={explore}>
-                        Попробовать самому →
+                        Попробовать самому
                       </button>
                     )}
                   </>

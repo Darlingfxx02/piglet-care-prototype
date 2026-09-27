@@ -1,3 +1,4 @@
+import arrowRightIcon from "./assets/iconsax-arrow-right.svg";
 import { AuthorLinks } from "./AuthorLinks";
 import { useEffect, useRef, useState } from "react";
 
@@ -24,7 +25,7 @@ function Screen({ width, height, title }: { width: number; height: number; title
 
 export function AdaptiveSummary({ onBack, onStart, onAssignment }: { onBack: () => void; onStart: () => void; onAssignment: () => void }) {
   return <section className="adaptive-summary" aria-labelledby="adaptive-title">
-    <header><button className="summary-back" onClick={onBack}>← Назад</button><h1 id="adaptive-title">Один сервис. Три формата.</h1><p>Телефон, планшет и десктоп</p></header>
+    <header><button className="summary-back" onClick={onBack}><img className="back-icon" src={arrowRightIcon} alt="" />Назад</button><h1 id="adaptive-title">Адаптивные версии</h1><p>Телефон, планшет и десктоп</p></header>
     <div className="adaptive-pair">
       <figure className="adaptive-phone"><div className="adaptive-device">
         <Screen width={430} height={932} title="Мобильная версия" />

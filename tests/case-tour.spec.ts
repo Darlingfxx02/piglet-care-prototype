@@ -101,14 +101,14 @@ test("exploration follows phone navigation, feedback steps, and hides embedded s
   await page.getByRole("button", { name: /Попробовать самому/ }).click();
   const f = page.frameLocator("iframe");
   await phoneClick(page, f.locator(".mobile-profile-row .support-button"));
-  await expect(page.locator(".notes h1")).toContainText("Сначала контекст.");
+  await expect(page.locator(".notes h1")).toContainText("Выбор темы обращения");
   await page
     .locator(".chapters button")
     .filter({ hasText: "Обратная связь" })
     .click();
   await phoneClick(page, f.locator(".stars button").nth(4));
   await phoneClick(page, f.locator(".rating-submit"));
-  await expect(page.locator(".notes h1")).toHaveText("Детали — по желанию");
+  await expect(page.locator(".notes h1")).toHaveText("Необязательные подробности");
   await phoneClick(page, f.locator(".rating-submit"));
   await expect(page.locator(".notes h1")).toHaveText(
     "Спасибо без лишнего экрана",

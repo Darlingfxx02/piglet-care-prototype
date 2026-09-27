@@ -648,3 +648,6 @@ button:focus-visible {
 .author-links a.figma-link:hover { background: #fff; }
 
 .assignment-dialog::-webkit-scrollbar { display: none; }
+
+.back-icon { width: 20px; height: 20px; flex: none; transform: rotate(180deg); }
+.summary-back { display: inline-flex; align-items: center; gap: 8px; }
