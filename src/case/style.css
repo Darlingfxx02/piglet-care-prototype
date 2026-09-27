@@ -467,7 +467,8 @@ button:focus-visible {
   }
   .mode-tour .device-column {
     overflow: visible;
-    clip-path: inset(-100dvh 0);
+    /* The camera may extend vertically; never clip its sides to this column. */
+    clip-path: none;
   }
 }
 

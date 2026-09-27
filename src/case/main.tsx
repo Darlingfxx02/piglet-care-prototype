@@ -417,7 +417,12 @@ function CasePage() {
   }, [arrival, complete, mode]);
   const busy = mode === "tour" && !ready;
   const overview = Boolean(shot.overviewAfter && acted);
-  const zoom = box ? Math.min(1.65, Math.max(1.12, 65 / box.h)) : 1;
+  // Fit the entire shell horizontally before zooming into an anchor. A column
+  // clip used to cut off the right side at tall/narrow desktop viewports.
+  const phoneWidth = phone.current?.offsetWidth ?? 0;
+  const columnWidth = phone.current?.parentElement?.clientWidth ?? 0;
+  const availableZoom = phoneWidth > 0 ? Math.max(1, (columnWidth - 16) / phoneWidth) : 1;
+  const zoom = box ? Math.min(availableZoom, 1.65, Math.max(1.12, 65 / box.h)) : 1;
   // Keep the current camera while the next UI state is being prepared.
   // Native transitions finish even while automatic tour playback is paused.
   const lastCamera = useRef<CSSProperties>({ transform: "translateY(0px) scale(1)" });
