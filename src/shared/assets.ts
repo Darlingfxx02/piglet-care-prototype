@@ -35,6 +35,7 @@ export const assets = {
   tail: "3397fcf6-0d71-42e5-aa77-230a8088ff32.svg",
   attachmentOrder: "attachment-order.svg",
   feedbackHeart: "feedback-heart-3d.png",
+  feedbackBrokenHeart: "feedback-broken-heart-3d.png",
   feedbackService: "feedback-service-3d.png",
   documentArt: "document-3d.png",
   documents: "documents.svg",

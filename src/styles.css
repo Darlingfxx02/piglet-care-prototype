@@ -2632,7 +2632,7 @@ dialog.rating-layer::backdrop {
 
 .feedback-toast-heart { width: 22px; height: 22px; object-fit: contain; }
 .feedback-toast { pointer-events: auto; }
-.feedback-toast > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.feedback-toast > span { min-width: 0; white-space: normal; }
 .feedback-toast-close { display: grid; place-items: center; flex: 0 0 28px; width: 28px; height: 28px; margin-block: -3px; color: #ffffffb3; border-radius: 8px; }
 .feedback-toast-close:hover { color: #fff; background: #ffffff14; }
 .feedback-toast-close:focus-visible { outline-color: #fff; }

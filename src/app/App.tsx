@@ -169,7 +169,7 @@ export default function App() {
           />
         </dialog>
       )}
-      {feedbackToast && route === "support" && <FeedbackToast onDismiss={() => setFeedbackToast(false)} />}
+      {feedbackToast && route === "support" && <FeedbackToast score={state.review?.score ?? 5} onDismiss={() => setFeedbackToast(false)} />}
       {detail && (
         <Modal
           title={`${detail.breed}, заказ №${detail.id}`}
